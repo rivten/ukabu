@@ -2,6 +2,10 @@ import libc {...}
 
 func main(ArgumentCount: int, Arguments: char**): int
 {
+	if(ArgumentCount == 1)
+	{
+		TestUkabu();
+	}
 	if(ArgumentCount == 2)
 	{
 		f : float = Hexa32ToFloat(Arguments[1]);
@@ -61,4 +65,20 @@ func Assert(Cond: bool, Message: char*)
 		printf("%s\n", Message);
 		#assert(false);
 	}
+}
+
+func TestUkabu()
+{
+	printf("Performing tests...\n");
+	f: float = Hexa32ToFloat("0x00000000");
+	#assert(f == 0.0);
+	f = Hexa32ToFloat("0xc0600000");
+	#assert(f == -3.5);
+	f = Hexa32ToFloat("0x3f800000");
+	#assert(f == 1.0);
+
+	// TODO(hugo): NaN !
+	// TODO(hugo): For very very small values, the display will not be good
+
+	printf("All tests passed.\n");
 }
