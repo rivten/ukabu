@@ -1,0 +1,54 @@
+func IsLetter(C : char): bool
+{
+	Result := (C >= 'a' && C <= 'z') || (IsUpperLetter(C));
+	return(Result);
+}
+
+func IsUpperLetter(C: char): bool
+{
+	return(C >= 'A' && C <= 'Z');
+}
+
+func ToLower(C: char): char
+{
+	Assert(IsLetter(C), "Non ASCII letter received");
+	if(IsUpperLetter(C))
+	{
+		return(C - 'A' + 'a');
+	}
+	else
+	{
+		return(C);
+	}
+}
+
+func IsNumber(C: char): bool
+{
+	return(C >= '0' && C <= '9');
+}
+
+func IsHexa(C: char): bool
+{
+	IsNumber := IsNumber(C);
+	if(IsNumber)
+	{
+		return(true);
+	}
+
+	IsHexaletter := (ToLower(C) >= 'a' && ToLower(C) <= 'f');
+	return(IsHexaletter);
+}
+
+func HexaToDecimal(C: char) : uint8
+{
+	Assert(IsHexa(C), "Not hexadecimal character received");
+	if(IsNumber(C))
+	{
+		return(C - '0');
+	}
+	else
+	{
+		return(ToLower(C) - 'a' + 10);
+	}
+}
+

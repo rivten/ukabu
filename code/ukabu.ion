@@ -1,7 +1,64 @@
 import libc {...}
 
-func main(argc: int, argv: char**): int
+func main(ArgumentCount: int, Arguments: char**): int
 {
-	printf("Hello, sailor!\n");
+	if(ArgumentCount == 2)
+	{
+		f : float = Hexa32ToFloat(Arguments[1]);
+		printf("Result = %f\n", f);
+	}
+
 	return(0);
+}
+
+func Hexa32ToFloat(Str: char*): float
+{
+	Hexa : uint32 = ParseHexa32(Str);
+	Memory : void* = &Hexa;
+	Result : float = *(:float*)(Memory);
+	return(Result);
+}
+
+func ParseHexa32(Str: char*) : uint32
+{
+	Assert(Str != 0, "Null string passed");
+	Length : uint32 = StringLength(Str);
+	Assert(Length == 10, "String length is not 10 (cf 0xFFFFFFFF)");
+	Assert(Str[0] == '0', "First char is not '0'");
+	Assert(Str[1] == 'x', "Second char is not 'x'");
+
+	Result : uint32 = 0;
+	PowerOf16 : uint32 = 1;
+	for(Index : uint8 = 0; Index < 8; ++Index)
+	{
+		// NOTE(hugo): We skip 0x
+		C := Str[9 - Index];
+		Value := HexaToDecimal(C);
+		Result += Value * PowerOf16;
+		PowerOf16 *= 16;
+	}
+	return(Result);
+}
+
+func StringLength(Str: char*): uint32
+{
+	C : char* = Str;
+	Result := 0;
+
+	while(C != 0 && *C != '\0')
+	{
+		++C;
+		++Result;
+	}
+
+	return(Result);
+}
+
+func Assert(Cond: bool, Message: char*)
+{
+	if(!Cond)
+	{
+		printf("%s\n", Message);
+		#assert(false);
+	}
 }
