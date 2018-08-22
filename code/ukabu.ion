@@ -1,0 +1,7 @@
+import libc {...}
+
+func main(argc: int, argv: char**): int
+{
+	printf("Hello, sailor!\n");
+	return(0);
+}
