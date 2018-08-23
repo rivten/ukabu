@@ -11,7 +11,7 @@ func HexaToSpec(Hexa: uint32): spec
 {
 	Result: spec = {};
 	Result.Sign = Hexa >> 31;
-	Result.Exponent = (Hexa >> 23) & 0xFFFF;
+	Result.Exponent = (:uint8)((Hexa >> 23) & 0xFFFF);
 	Result.Mantissa = (Hexa & 0x007FFFFF);
 	return(Result);
 }
