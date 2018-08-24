@@ -52,3 +52,30 @@ func HexaToDecimal(C: char) : uint8
 	}
 }
 
+func IsHexString(Str: char*) : bool
+{
+	Result : bool = StringLength(Str) >= 2 &&
+		Str[0] == '0' && Str[1] == 'x';
+	return(Result);
+}
+
+func IsFloatString(Str: char*) : bool
+{
+	DotFoundCount : uint8 = 0;
+	for(C := Str; C && *C != '\0'; ++C)
+	{
+		if(*C == '.')
+		{
+			++DotFoundCount;
+			if(DotFoundCount >= 2)
+			{
+				return(false);
+			}
+		}
+		else if(!IsNumber(*C))
+		{
+			return(false);
+		}
+	}
+	return(true);
+}

@@ -7,7 +7,15 @@ struct spec
 	Mantissa: uint32; // NOTE(hugo): 23 bits
 }
 
-func HexaToSpec(Hexa: uint32): spec
+enum ukabu_mode
+{
+	Mode_Invalid,
+	Mode_HexToFloat,
+	Mode_FloatToHex,
+	Mode_Test,
+}
+
+func Hexa32ToSpec(Hexa: uint32): spec
 {
 	Result: spec = {};
 	Result.Sign = Hexa >> 31;
@@ -18,18 +26,50 @@ func HexaToSpec(Hexa: uint32): spec
 
 func main(ArgumentCount: int, Arguments: char**): int
 {
+	Mode : ukabu_mode = Mode_Invalid;
 	if(ArgumentCount == 1)
 	{
-		TestUkabu();
+		Mode = Mode_Test;
 	}
 	if(ArgumentCount == 2)
 	{
-		f : float = Hexa32ToFloat(Arguments[1]);
-		printf("Result = %f\n", f);
-		Spec : spec = HexaToSpec(ParseHexa32(Arguments[1]));
-		printf("Sign = %f\n", Spec.Sign == 1 ? -1.0 : 1.0);
-		printf("Exponent = %u\n", Spec.Exponent);
-		printf("Mantissa = %u\n", Spec.Mantissa);
+		Str : char* = Arguments[1];
+		if(IsFloatString(Str))
+		{
+			Mode = Mode_FloatToHex;
+		}
+		else if(IsHexString(Str))
+		{
+			Mode = Mode_HexToFloat;
+		}
+	}
+
+	@complete
+	switch(Mode)
+	{
+		case Mode_Test:
+			{
+				TestUkabu();
+			}
+		case Mode_HexToFloat:
+			{
+				HexaStr : char* = Arguments[1];
+				f : float = Hexa32ToFloat(HexaStr);
+				printf("Result = %f\n", f);
+				Spec : spec = Hexa32ToSpec(ParseHexa32(HexaStr));
+				printf("Sign = %f\n", Spec.Sign == 1 ? -1.0 : 1.0);
+				printf("Exponent = %u\n", Spec.Exponent);
+				printf("Mantissa = %u\n", Spec.Mantissa);
+			}
+		case Mode_FloatToHex:
+			{
+				printf("Float detected\n");
+				// TODO(hugo): Parse float to IEEE754
+			}
+		case Mode_Invalid:
+			{
+				printf("Invalid argument\n");
+			}
 	}
 
 	return(0);
